@@ -1,23 +1,65 @@
 'use strict';
-// const { default: axios } = require('axios');
-require('dotenv').config();
+
+require('dotenv').config;
 const express = require('express');
 const cors = require('cors');
-const app = express(); // class that create a new API
+const movie = require('./Modules/MoviesMod.js');
+const weather = require('./Modules/WeatherMod.js');
+const app = express();
 const PORT = process.env.PORT;
-app.use(cors());
+app.use(cors())
 
- const weatherfile = require ('./Controller/WeatherCon')
- const moviefile = require ('./Controller/MoviesCon')
+app.get('/weather', weatherHandler);
 
-app.listen(PORT, () => {
-    console.log('server listen to ', PORT);
-});
-app.get('/' , (req , res)=>{res.send('HOME')})
+async function weatherHandler(request, response) {
+  const { lat, lon } = request.query;
+  await weather(lat, lon)
+  .then(summaries => response.send(summaries))
+  .catch((error) => {
+    console.error(error);
+    response.status(200).send('Sorry. Something went wrong!')
+  });
+}  
 
-app.get('/weather' , weatherfile)
+app.get('/movies', movieHandler);
 
-app.get('/movie' , moviefile)
+function movieHandler(request, response) {
+    const { query } = request.query;
+    movie(query)
+        .then(summaries => { response.send(summaries) })
+        .catch((error) => {
+            console.error(error);
+            response.status(200).send('Sorry. Something went wrong!')
+        });
+}
+
+
+
+app.listen(8888, () => console.log(`Server up on 8888`));
+
+
+
+
+// 'use strict';
+// // const { default: axios } = require('axios');
+// require('dotenv').config();
+// const express = require('express');
+// const cors = require('cors');
+// const app = express(); // class that create a new API
+// const PORT = process.env.PORT;
+// app.use(cors());
+
+//  const weatherfile = require ('./Controller/WeatherCon')
+//  const moviefile = require ('./Controller/MoviesCon')
+
+// app.listen(PORT, () => {
+//     console.log('server listen to ', PORT);
+// });
+// app.get('/' , (req , res)=>{res.send('HOME')})
+
+// app.get('/weather' , weatherfile)
+
+// app.get('/movie' , moviefile)
 
     //     if (city) {
     //         let forecastobj = city.map(value => {
