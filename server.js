@@ -1,48 +1,56 @@
 'use strict';
+// const { default: axios } = require('axios');
+require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const app = express(); // class that create a new API
-const weatherData = require('./data/weather.json');
 const PORT = process.env.PORT;
+app.use(cors());
+
+ const weatherfile = require ('./Controller/WeatherCon')
+ const moviefile = require ('./Controller/MoviesCon')
 
 app.listen(PORT, () => {
-    console.log('hello');
+    console.log('server listen to ', PORT);
 });
+app.get('/' , (req , res)=>{res.send('HOME')})
 
-app.get('/weather', (req, res) => {
-    // define and get the query parameters
-    let lat = Number(req.query.lat);
-    let lon = Number(req.query.lon);
-    let searchQuery = req.query.searchQuery;
+app.get('/weather' , weatherfile)
 
-    // after getting the parameters get the cities that hold these parameters
-    if (searchQuery) {
-        let data = [];
+app.get('/movie' , moviefile)
 
-        data = weatherData.find(value => {
-            return (value.city_name === searchQuery);
-        })
-        //   res.send(data.data[0]);
-        let city = data.data
-        if (city) {
-            let forecastobj = city.map(value => {
-                return new Forecasts(value.datetime, value.weather.description)
-            })
-            res.send(forecastobj)
-        }
-        else {
-            res.send(" Error: city not found")
-        }
-    } else {
-        res.status(400).send("Error: on Query Parameters");
-    }
-})
+    //     if (city) {
+    //         let forecastobj = city.map(value => {
+    //             return new Forecasts(value.datetime, value.weather.description)
+    //         })
+    //         res.send(forecastobj)
+    //     }
+    //     else {
+    //         res.send(" Error: city not found")
+    //     }
+    // } else {
+    //     res.status(400).send("Error: on Query Parameters");
+    // }
+    
 
 
-class Forecasts {
-    constructor(data, description) {
-        this.data = data;
-        this.description = description;
-    }
+// if (searchQuery) {
+//     let data = [];
 
-
-}
+//     data = weatherData.find(value => {
+//         return (value.city_name === searchQuery);
+//     })
+//     //   res.send(data.data[0]);
+//     let city = data.data
+//     if (city) {
+//         let forecastobj = city.map(value => {
+//             return new Forecasts(value.datetime, value.weather.description)
+//         })
+//         res.send(forecastobj)
+//     }
+//     else {
+//         res.send(" Error: city not found")
+//     }
+// } else {
+//     res.status(400).send("Error: on Query Parameters");
+// }
